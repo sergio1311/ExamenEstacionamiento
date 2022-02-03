@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="row" style="margin-top: 5%; margin-left: 10%; margin-right: 10%; width: 80%;">
+        <div class="col" >
+            <form >
+                <h2 >Formulario de Entrada</h2>
+                <br>
+                <label for="">Hora de Entrada</label>
+                <input style="width: 100%;" type="time" [formControl]="horaEntrada" placeholder="Hora">
+                
+                
+                <br>
+                <label for="">Placas</label>
+                <input style="width: 100%;" type="text" [formControl]="placas" placeholder="Placas del vehiculo">
+                <br>
+                <br>
+                <label for="">Tipo de Vehiculo</label>
+                <select  (ngModelChange)="onChange($event)" style="width: 100%;" name="" id="" [formControl]="tipoVehiculo">
+                    <option [value]="item"  *ngFor="let item of lista">{{item}}</option>
+                </select>
+                <br>
+                <br>
+                <button class="btn btn-primary" style="width: 30%; margin-left: 35%; margin-right: 35%;" (click)="submitVehiculo()">Guardar</button>
+
+            </form>
+        </div>
+        <div class="col" >
+            <h2>Autos Estacionados</h2>
+            <br>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col" style="width:20% ;">Hora Entrada</th>
+                        <th scope="col" style="width:20% ;">Dia Entrada</th>
+                        <th class="col" style="width:20% ;">Placas</th>
+                        <th class="col" style="width:20% ;">Tipo</th>
+                        <th class="col" style="width:20% ;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of (observableVehiculo | async)">
+                        <th scope="col" style="width:20% ;">{{item.horaEntrada}}</th>
+                        <th scope="col" style="width:20% ;">{{item.diaEntrada}}</th>
+                        <th scope="col" style="width:20% ;">{{item.placas}}</th>
+                        <th scope="col" style="width:20% ;">{{item.tipoVehiculo}}</th>
+                        <th scope="col" style="width:20% ;"><button class="btn btn-success" (click)="modal.open(content)">Salida</button></th>
+                        <ng-template #content let-modal>
+                            <div class="modal-header">
+                                <h4 class="modal-title">Dar Salida a {{item.placas}}</h4>
+                                <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                            </div>
+                            <div class="modal-body">
+                                <form action="">
+                                    <h4>Hora de Entrada:</h4>
+                                    <h6>{{item.horaEntrada}}</h6>
+                                    <br>
+                                    <h4>Placas:</h4>
+                                    <h6>{{item.placas}}</h6>
+                                    <br>
+                                    <h4>Tipo:</h4>
+                                    <h6>{{item.tipoVehiculo}}</h6>
+                                    <br>
+                                    <h4>Hora de Salida:</h4>
+                                    <input style="width: 63%;"  type="time" [formControl]="horaSalida" placeholder="Hora">
+                                    
+                                    
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-outline-success" (click)="borrarAutomovil(item)">Dar Salida</button>
+                            </div>
+                        </ng-template>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+    </div>
+    <div class="row" style="margin-top: 5%; margin-left: 10%; width: 80%;">
+        
+        <h2>Salidas Registradas</h2>
+        
+        <div style="margin-top: 3%;" class="row">
+            <div class="col">
+                <h3>Filtrar por fecha de salida</h3>
+                <input style="width: 56%;" (ngModelChange)="onFilterChange($event)"  [formControl]="fechaFiltro" type="date">
+            </div>
+            <div class="col">
+                <h3>Filtrar por hora de salida</h3>
+                <input style="width: 55%;" (ngModelChange)="onHourChange($event)" type="time" [formControl]="horaFiltro" placeholder="Hora">
+            </div>
+        </div>
+        <br>
+        
+        <table id="htmlData" style="margin-top: 3%;" class="table">
+            <thead>
+                <tr>
+                    <th style="width: 14%;" scope="col">Fecha Entrada</th>
+                    <th style="width: 14%;" scope="col">Hora Entrada</th>
+                    <th style="width: 14%;" scope="col">Fecha Salida</th>
+                    <th style="width: 16%;" scope="col">HoraSalida</th>
+                    <th style="width: 14%;" class="col">Placas</th>
+                    <th style="width: 14%;" class="col">Tipo</th>
+                    <th style="width: 14%;" class="col">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of (observableSalida | async)">
+                    <th>{{item.diaEntrada}}</th>
+                    <th>{{item.horaEntrada}}</th>
+                    <th>{{item.diaSalida}}</th>
+                    <th>{{item.horaSalida}}</th>
+                    <th>{{item.placas}}</th>
+                    <th>{{item.tipoVehiculo}}</th>
+                    <th>${{item.total}} MXN</th>
+                </tr>
+            </tbody>
+        </table>
+        <br>
+        <button style="width: 40%; margin-left: 30%;margin-right: 30%;" class="btn btn-success" (click)="downloadAsPDF()">Guardar Reporte</button>
+    </div>
+</body>
+</html>
